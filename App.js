@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import React,{useState} from 'react';
-import { StyleSheet, Text, View,Button,TextInput,ScrollView,FlatList,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View,Button,TextInput,ScrollView,FlatList,TouchableOpacity,Alert,TouchableWithoutFeedback,Keyboard } from 'react-native';
 import Header from './Components/Header'
 import TodoItem from './Components/TodoItem'
+import AddTodo from './Components/AddTodo'
 
 export default function App() {
   
@@ -22,11 +23,27 @@ export default function App() {
 
   }
 
+  const submitHandler = (text) => {
+    if (text.length > 3) {
+    setTodos((prevTodos) => {
+       return [
+        {text: text,key: Math.random().toString()},
+        ...prevTodos
+       ];
+    });
+  } else {
+    Alert.alert('OOPS','text must be 4 chars length at least',[{text: "understood", onPress: ()=>console.log('closed')}]);
+  }
+  }
+
   return (
+    <TouchableWithoutFeedback onPress={()=>{
+      Keyboard.dismiss();
+    }}>
     <View style={styles.container}>
      <Header />
      <View style={styles.content}>
-     {/* form */}
+     <AddTodo submitHandler={submitHandler}/>
      <View style={styles.list}>
      <FlatList
     data = {todos}
@@ -38,6 +55,7 @@ export default function App() {
      </View>
       
     </View>
+    </TouchableWithoutFeedback>
   );
 }
 
